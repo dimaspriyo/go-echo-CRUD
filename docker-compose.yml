@@ -1,0 +1,34 @@
+version: "3.3"
+services:
+    elasticsearch:
+        image : docker.elastic.co/elasticsearch/elasticsearch:7.11.2
+        ports: 
+            - "9200:9200"   
+        networks: 
+            - go-echo
+        environment: 
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - discovery.type=single-node
+        restart: always
+    postgresql:
+        image : postgres:alpine
+        ports: 
+            - "5432:5432"   
+        networks: 
+            - go-echo
+        environment: 
+            - POSTGRES_PASSWORD= example
+        restart: always
+    mongodb:
+        image : mongo:bionic
+        ports: 
+            - "27017:27017"   
+        networks: 
+            - go-echo
+        environment: 
+            - "MONGO_INITDB_ROOT_USERNAME:root"
+            - "MONGO_INITDB_ROOT_PASSWORD:example"
+        restart: always
+networks: 
+    go-echo:
+        driver: bridge
