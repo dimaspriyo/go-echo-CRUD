@@ -5,7 +5,3 @@ type PostgresqlRequest struct {
 	name    string
 	address string
 }
-
-func SavePostgresql(shared main.Shared) {
-
-}

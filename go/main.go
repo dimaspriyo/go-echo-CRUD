@@ -1,38 +1,40 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
-	"go/internal/controller"
+	"go/internal/config"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 )
 
-func main() {
+var Shared config.GlobalShared
 
-	type Shared struct {
-		ctx      echo.Context
-		psqlconn *sql.DB
-	}
+func init() {
+	viper.SetConfigName("env") // config file name without extension
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("./env") // config file path
 
-	var shared Shared
-
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	db, err := sql.Open("postgres", psqlconn)
+	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("fatal error config file: default \n", err)
+		os.Exit(1)
 	}
-	shared.psqlconn = db
-	defer db.Close()
+
+	Shared = config.InitShared()
+
+}
+
+func main() {
 
 	e := echo.New()
 
 	e.GET("/tet", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Your Real IP : "+c.RealIP())
 	})
-
-	e.GET("/aa", controller.SavePostgresql(shared))
 
 	e.Start(":8000")
 }
