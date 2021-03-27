@@ -21,10 +21,10 @@ type PostgresqlService struct {
 	repo   repository.IPostgresqlRepository
 }
 
-func NewPostgresqlService(s config.GlobalShared, r repository.PostgresqlRepository) IPostgresqlService {
+func NewPostgresqlService(s config.GlobalShared) IPostgresqlService {
 	return PostgresqlService{
 		shared: s,
-		repo:   r,
+		repo:   repository.NewPostgresqlRepository(),
 	}
 }
 

@@ -21,12 +21,8 @@ type PostgresqlRepository struct {
 	ctx    echo.Context
 }
 
-func NewPostgresqlRepository(s config.GlobalShared, e PostgresqlEntity, c echo.Context) IPostgresqlRepository {
-	return PostgresqlRepository{
-		shared: s,
-		entity: e,
-		ctx:    c,
-	}
+func NewPostgresqlRepository() IPostgresqlRepository {
+	return PostgresqlRepository{}
 }
 
 func (r PostgresqlRepository) FindAll() []PostgresqlEntity {
