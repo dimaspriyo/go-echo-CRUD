@@ -1,7 +1,13 @@
 package controller
 
 type PostgresqlRequest struct {
-	avatar  string
-	name    string
-	address string
+	Avatar  string
+	Name    string
+	Address string
+}
+
+type PostgresqlResponse struct {
+	Avatar  string
+	Name    string
+	Address string
 }

@@ -16,7 +16,7 @@ type IP struct {
 }
 
 type PostgresqlEntity struct {
-	avatar  string
-	name    string
-	address string
+	Avatar  string
+	Name    string
+	Address string
 }
