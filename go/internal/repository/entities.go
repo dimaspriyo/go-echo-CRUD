@@ -14,3 +14,9 @@ type Location struct {
 type IP struct {
 	IPv4 string `json:"ipv4"`
 }
+
+type PostgresqlEntity struct {
+	avatar  string
+	name    string
+	address string
+}
