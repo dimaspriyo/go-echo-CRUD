@@ -7,8 +7,8 @@ import (
 )
 
 type IPostgresqlRepository interface {
-	getbyId(id int) PostgresqlEntity
-	getAll() []PostgresqlEntity
+	findById(id int) PostgresqlEntity
+	findAll() []PostgresqlEntity
 	create(p PostgresqlEntity)
 	update(id int, p PostgresqlEntity)
 	delete(id int)
@@ -28,7 +28,7 @@ func NewPostgresqlRepository(s config.GlobalShared, e PostgresqlEntity, c echo.C
 	}
 }
 
-func (r PostgresqlRepository) getAll() []PostgresqlEntity {
+func (r PostgresqlRepository) findAll() []PostgresqlEntity {
 
 	var res []PostgresqlEntity
 
@@ -50,7 +50,7 @@ func (r PostgresqlRepository) getAll() []PostgresqlEntity {
 	return res
 }
 
-func (r PostgresqlRepository) getbyId(id int) PostgresqlEntity {
+func (r PostgresqlRepository) findById(id int) PostgresqlEntity {
 	var res PostgresqlEntity
 
 	row := r.shared.Psqlconn.QueryRow(`SELECT name, address, avatar FROM users WHERE id=$1`, id)
@@ -97,7 +97,7 @@ func (r PostgresqlRepository) update(id int, p PostgresqlEntity) {
 		panic(err.Error())
 	}
 
-	_ = r.getbyId(id)
+	_ = r.findById(id)
 
 	rows, err := tx.ExecContext(r.ctx.Request().Context(), `UPDATE users SET name=$1, address=$2, avatar=$3 WHERE id=$4`, p.name, p.address, p.avatar, id)
 	if err != nil {
@@ -126,7 +126,7 @@ func (r PostgresqlRepository) delete(id int) {
 		panic(err.Error())
 	}
 
-	_ = r.getbyId(id)
+	_ = r.findById(id)
 
 	rows, err := tx.ExecContext(r.ctx.Request().Context(), `DELETE FROM users WHERE id=$1`, id)
 	if err != nil {
