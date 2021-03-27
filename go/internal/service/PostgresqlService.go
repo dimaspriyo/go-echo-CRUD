@@ -9,11 +9,11 @@ import (
 )
 
 type IPostgresqlService interface {
-	getbyId(id int, ctx echo.Context) controller.PostgresqlResponse
-	getAll(ctx echo.Context) []controller.PostgresqlResponse
-	create(req controller.PostgresqlRequest, ctx echo.Context) string
-	update(id int, req controller.PostgresqlRequest, ctx echo.Context) string
-	delete(id int, ctx echo.Context) string
+	GetbyId(id int, ctx echo.Context) controller.PostgresqlResponse
+	GetAll(ctx echo.Context) []controller.PostgresqlResponse
+	Create(req controller.PostgresqlRequest, ctx echo.Context) string
+	Update(id int, req controller.PostgresqlRequest, ctx echo.Context) string
+	Delete(id int, ctx echo.Context) string
 }
 
 type PostgresqlService struct {
@@ -28,14 +28,14 @@ func NewPostgresqlService(s config.GlobalShared, r repository.PostgresqlReposito
 	}
 }
 
-func (s PostgresqlService) getbyId(id int, ctx echo.Context) controller.PostgresqlResponse {
+func (s PostgresqlService) GetbyId(id int, ctx echo.Context) controller.PostgresqlResponse {
 	row := s.repo.FindById(id)
 	resp := s.convertDAOtoDTO(row)
 	return resp
 
 }
 
-func (s PostgresqlService) getAll(ctx echo.Context) []controller.PostgresqlResponse {
+func (s PostgresqlService) GetAll(ctx echo.Context) []controller.PostgresqlResponse {
 
 	var resp []controller.PostgresqlResponse
 	rows := s.repo.FindAll()
@@ -48,7 +48,7 @@ func (s PostgresqlService) getAll(ctx echo.Context) []controller.PostgresqlRespo
 
 }
 
-func (s PostgresqlService) create(req controller.PostgresqlRequest, ctx echo.Context) string {
+func (s PostgresqlService) Create(req controller.PostgresqlRequest, ctx echo.Context) string {
 	ent := s.convertDTOtoDAO(req)
 	rows, tx := s.repo.Create(ent, ctx)
 
@@ -70,7 +70,7 @@ func (s PostgresqlService) create(req controller.PostgresqlRequest, ctx echo.Con
 
 }
 
-func (s PostgresqlService) update(id int, req controller.PostgresqlRequest, ctx echo.Context) string {
+func (s PostgresqlService) Update(id int, req controller.PostgresqlRequest, ctx echo.Context) string {
 
 	ent := s.convertDTOtoDAO(req)
 	row, tx := s.repo.Update(id, ent, ctx)
@@ -93,7 +93,7 @@ func (s PostgresqlService) update(id int, req controller.PostgresqlRequest, ctx 
 
 }
 
-func (s PostgresqlService) delete(id int, ctx echo.Context) string {
+func (s PostgresqlService) Delete(id int, ctx echo.Context) string {
 	row, tx := s.repo.Delete(id, ctx)
 
 	err := tx.Commit()

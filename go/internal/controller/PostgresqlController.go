@@ -1,13 +1,18 @@
 package controller
 
-type PostgresqlRequest struct {
-	Avatar  string
-	Name    string
-	Address string
+import (
+	"go/internal/service"
+
+	"github.com/labstack/echo/v4"
+)
+
+type PostgresqlController struct {
+	s service.IPostgresqlService
 }
 
-type PostgresqlResponse struct {
-	Avatar  string
-	Name    string
-	Address string
+func NewPostgresqlController() {
+
+}
+
+func (c PostgresqlController) getAll(ctx echo.Context) {
 }

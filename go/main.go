@@ -24,7 +24,14 @@ func init() {
 		os.Exit(1)
 	}
 
-	Shared = config.InitShared()
+	psqlConn := config.PsqlConn{
+		Host:     viper.GetString("postgresql.host"),
+		Port:     viper.GetInt64("postgresql.port"),
+		User:     viper.GetString("postgresql.user"),
+		Password: viper.GetString("postgresql.password"),
+		Dbname:   viper.GetString("postgresql.dbname"),
+	}
+	Shared = config.InitShared(psqlConn)
 
 }
 
