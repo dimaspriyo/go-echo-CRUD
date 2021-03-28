@@ -1,7 +1,7 @@
 package postgresql
 
 type PostgresqlRequest struct {
-	Avatar  string
-	Name    string
-	Address string
+	Avatar  string `json:"avatar"`
+	Name    string `json:"name"`
+	Address string `json:"address"`
 }

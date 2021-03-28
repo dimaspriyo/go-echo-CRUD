@@ -8,11 +8,11 @@ import (
 )
 
 type IPostgresqlRepository interface {
-	FindById(id int) PostgresqlEntity
+	FindById(id int64) PostgresqlEntity
 	FindAll() []PostgresqlEntity
 	Create(p PostgresqlEntity, ctx echo.Context) (sql.Result, *sql.Tx)
-	Update(id int, p PostgresqlEntity, ctx echo.Context) (sql.Result, *sql.Tx)
-	Delete(id int, ctx echo.Context) (sql.Result, *sql.Tx)
+	Update(id int64, p PostgresqlEntity, ctx echo.Context) (sql.Result, *sql.Tx)
+	Delete(id int64, ctx echo.Context) (sql.Result, *sql.Tx)
 }
 
 type PostgresqlRepository struct {
@@ -47,7 +47,7 @@ func (r PostgresqlRepository) FindAll() []PostgresqlEntity {
 	return res
 }
 
-func (r PostgresqlRepository) FindById(id int) PostgresqlEntity {
+func (r PostgresqlRepository) FindById(id int64) PostgresqlEntity {
 	var res PostgresqlEntity
 
 	row := r.shared.Psqlconn.QueryRow(`SELECT name, address, avatar FROM users WHERE id=$1`, id)
@@ -76,7 +76,7 @@ func (r PostgresqlRepository) Create(p PostgresqlEntity, ctx echo.Context) (sql.
 
 }
 
-func (r PostgresqlRepository) Update(id int, p PostgresqlEntity, ctx echo.Context) (sql.Result, *sql.Tx) {
+func (r PostgresqlRepository) Update(id int64, p PostgresqlEntity, ctx echo.Context) (sql.Result, *sql.Tx) {
 	tx, err := r.shared.Psqlconn.BeginTx(r.ctx.Request().Context(), nil)
 	if err != nil {
 		panic(err.Error())
@@ -93,7 +93,7 @@ func (r PostgresqlRepository) Update(id int, p PostgresqlEntity, ctx echo.Contex
 
 }
 
-func (r PostgresqlRepository) Delete(id int, ctx echo.Context) (sql.Result, *sql.Tx) {
+func (r PostgresqlRepository) Delete(id int64, ctx echo.Context) (sql.Result, *sql.Tx) {
 	tx, err := r.shared.Psqlconn.BeginTx(r.ctx.Request().Context(), nil)
 	if err != nil {
 		panic(err.Error())

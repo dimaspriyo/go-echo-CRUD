@@ -7,11 +7,11 @@ import (
 )
 
 type IPostgresqlService interface {
-	GetbyId(id int, ctx echo.Context) PostgresqlResponse
+	GetbyId(id int64, ctx echo.Context) PostgresqlResponse
 	GetAll(ctx echo.Context) []PostgresqlResponse
 	Create(req PostgresqlRequest, ctx echo.Context) string
-	Update(id int, req PostgresqlRequest, ctx echo.Context) string
-	Delete(id int, ctx echo.Context) string
+	Update(id int64, req PostgresqlRequest, ctx echo.Context) string
+	Delete(id int64, ctx echo.Context) string
 }
 
 type PostgresqlService struct {
@@ -26,7 +26,7 @@ func NewPostgresqlService(s config.GlobalShared) IPostgresqlService {
 	}
 }
 
-func (s PostgresqlService) GetbyId(id int, ctx echo.Context) PostgresqlResponse {
+func (s PostgresqlService) GetbyId(id int64, ctx echo.Context) PostgresqlResponse {
 	row := s.repo.FindById(id)
 	resp := s.convertDAOtoDTO(row)
 	return resp
@@ -68,7 +68,7 @@ func (s PostgresqlService) Create(req PostgresqlRequest, ctx echo.Context) strin
 
 }
 
-func (s PostgresqlService) Update(id int, req PostgresqlRequest, ctx echo.Context) string {
+func (s PostgresqlService) Update(id int64, req PostgresqlRequest, ctx echo.Context) string {
 
 	ent := s.convertDTOtoDAO(req)
 	row, tx := s.repo.Update(id, ent, ctx)
@@ -91,7 +91,7 @@ func (s PostgresqlService) Update(id int, req PostgresqlRequest, ctx echo.Contex
 
 }
 
-func (s PostgresqlService) Delete(id int, ctx echo.Context) string {
+func (s PostgresqlService) Delete(id int64, ctx echo.Context) string {
 	row, tx := s.repo.Delete(id, ctx)
 
 	err := tx.Commit()

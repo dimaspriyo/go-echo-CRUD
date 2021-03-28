@@ -1,7 +1,7 @@
 package postgresql
 
 type MainResponse struct {
-	Success string      `json:"success"`
+	Success bool        `json:"success"`
 	Data    interface{} `json:"data"`
 	Message string      `json:"message"`
 }

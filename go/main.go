@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"go/internal/config"
-	"net/http"
+	"go/internal/postgresql"
 	"os"
 
 	"github.com/labstack/echo/v4"
@@ -39,9 +39,7 @@ func main() {
 
 	e := echo.New()
 
-	e.GET("/tet", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Your Real IP : "+c.RealIP())
-	})
+	postgresql.NewPostgresqlController(e, Shared)
 
-	e.Start(":8000")
+	e.Logger.Fatal(e.Start(":8000"))
 }
