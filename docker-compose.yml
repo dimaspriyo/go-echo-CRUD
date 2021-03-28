@@ -17,7 +17,9 @@ services:
         networks: 
             - go-echo
         environment: 
-            - POSTGRES_PASSWORD= example
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=example
+            - POSTGRES_DB=psqldb
         restart: always
     mongodb:
         image : mongo:bionic
