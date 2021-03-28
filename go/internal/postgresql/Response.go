@@ -1,4 +1,4 @@
-package controller
+package postgresql
 
 type MainResponse struct {
 	Success string      `json:"success"`

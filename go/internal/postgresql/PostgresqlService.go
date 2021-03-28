@@ -1,43 +1,41 @@
-package service
+package postgresql
 
 import (
 	"go/internal/config"
-	"go/internal/controller"
-	"go/internal/repository"
 
 	"github.com/labstack/echo/v4"
 )
 
 type IPostgresqlService interface {
-	GetbyId(id int, ctx echo.Context) controller.PostgresqlResponse
-	GetAll(ctx echo.Context) []controller.PostgresqlResponse
-	Create(req controller.PostgresqlRequest, ctx echo.Context) string
-	Update(id int, req controller.PostgresqlRequest, ctx echo.Context) string
+	GetbyId(id int, ctx echo.Context) PostgresqlResponse
+	GetAll(ctx echo.Context) []PostgresqlResponse
+	Create(req PostgresqlRequest, ctx echo.Context) string
+	Update(id int, req PostgresqlRequest, ctx echo.Context) string
 	Delete(id int, ctx echo.Context) string
 }
 
 type PostgresqlService struct {
 	shared config.GlobalShared
-	repo   repository.IPostgresqlRepository
+	repo   IPostgresqlRepository
 }
 
 func NewPostgresqlService(s config.GlobalShared) IPostgresqlService {
 	return PostgresqlService{
 		shared: s,
-		repo:   repository.NewPostgresqlRepository(),
+		repo:   NewPostgresqlRepository(),
 	}
 }
 
-func (s PostgresqlService) GetbyId(id int, ctx echo.Context) controller.PostgresqlResponse {
+func (s PostgresqlService) GetbyId(id int, ctx echo.Context) PostgresqlResponse {
 	row := s.repo.FindById(id)
 	resp := s.convertDAOtoDTO(row)
 	return resp
 
 }
 
-func (s PostgresqlService) GetAll(ctx echo.Context) []controller.PostgresqlResponse {
+func (s PostgresqlService) GetAll(ctx echo.Context) []PostgresqlResponse {
 
-	var resp []controller.PostgresqlResponse
+	var resp []PostgresqlResponse
 	rows := s.repo.FindAll()
 	for _, v := range rows {
 		temp := s.convertDAOtoDTO(v)
@@ -48,7 +46,7 @@ func (s PostgresqlService) GetAll(ctx echo.Context) []controller.PostgresqlRespo
 
 }
 
-func (s PostgresqlService) Create(req controller.PostgresqlRequest, ctx echo.Context) string {
+func (s PostgresqlService) Create(req PostgresqlRequest, ctx echo.Context) string {
 	ent := s.convertDTOtoDAO(req)
 	rows, tx := s.repo.Create(ent, ctx)
 
@@ -70,7 +68,7 @@ func (s PostgresqlService) Create(req controller.PostgresqlRequest, ctx echo.Con
 
 }
 
-func (s PostgresqlService) Update(id int, req controller.PostgresqlRequest, ctx echo.Context) string {
+func (s PostgresqlService) Update(id int, req PostgresqlRequest, ctx echo.Context) string {
 
 	ent := s.convertDTOtoDAO(req)
 	row, tx := s.repo.Update(id, ent, ctx)
@@ -113,9 +111,9 @@ func (s PostgresqlService) Delete(id int, ctx echo.Context) string {
 	return "Delete Success"
 }
 
-func (s PostgresqlService) convertDTOtoDAO(req controller.PostgresqlRequest) repository.PostgresqlEntity {
+func (s PostgresqlService) convertDTOtoDAO(req PostgresqlRequest) PostgresqlEntity {
 
-	ent := repository.PostgresqlEntity{
+	ent := PostgresqlEntity{
 		Name:    req.Name,
 		Avatar:  req.Avatar,
 		Address: req.Address,
@@ -124,8 +122,8 @@ func (s PostgresqlService) convertDTOtoDAO(req controller.PostgresqlRequest) rep
 	return ent
 }
 
-func (s PostgresqlService) convertDAOtoDTO(ent repository.PostgresqlEntity) controller.PostgresqlResponse {
-	resp := controller.PostgresqlResponse{
+func (s PostgresqlService) convertDAOtoDTO(ent PostgresqlEntity) PostgresqlResponse {
+	resp := PostgresqlResponse{
 		Avatar:  ent.Avatar,
 		Name:    ent.Name,
 		Address: ent.Address,

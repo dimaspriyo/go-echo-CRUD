@@ -1,6 +1,6 @@
-package controller
+package postgresql
 
-type PostgresqlRequest struct {
+type PostgresqlEntity struct {
 	Avatar  string
 	Name    string
 	Address string
