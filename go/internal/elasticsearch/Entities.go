@@ -1,4 +1,4 @@
-package repository
+package elasticsearch
 
 type MyLog struct {
 	HostName string `json:"host_name"`
@@ -13,10 +13,4 @@ type Location struct {
 
 type IP struct {
 	IPv4 string `json:"ipv4"`
-}
-
-type PostgresqlEntity struct {
-	Avatar  string
-	Name    string
-	Address string
 }
