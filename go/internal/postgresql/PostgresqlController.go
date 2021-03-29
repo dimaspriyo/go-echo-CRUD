@@ -5,16 +5,19 @@ import (
 	"go/internal/util"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
 type PostgresqlController struct {
-	s IPostgresqlService
+	s      IPostgresqlService
+	Shared *config.GlobalShared
 }
 
 func NewPostgresqlController(e *echo.Echo, shared *config.GlobalShared) {
 	controller := PostgresqlController{
-		s: NewPostgresqlService(shared),
+		s:      NewPostgresqlService(shared),
+		Shared: shared,
 	}
 
 	g := e.Group("/postgresql")
@@ -62,6 +65,12 @@ func (c PostgresqlController) create(ctx echo.Context) error {
 		panic(err.Error())
 	}
 
+	validate := validator.New()
+	err = validate.Struct(req)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	res := c.s.Create(req, ctx)
 
 	response.Data = res
@@ -79,6 +88,13 @@ func (c PostgresqlController) update(ctx echo.Context) error {
 	if err != nil {
 		panic(err.Error())
 	}
+
+	validate := validator.New()
+	err = validate.Struct(req)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	res := c.s.Update(id, req, ctx)
 
 	response.Data = res

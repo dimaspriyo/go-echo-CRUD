@@ -19,15 +19,12 @@ type PsqlConn struct {
 	Dbname   string
 }
 
-var Shared GlobalShared
-
 func InitShared(psql PsqlConn) GlobalShared {
 	psqlconn := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", psql.User, psql.Password, psql.Host, psql.Dbname)
 	psqldb, err := sql.Open("postgres", psqlconn)
 	if err != nil {
 		panic(err.Error())
 	}
-
 	return GlobalShared{
 		Psqlconn: psqldb,
 	}
