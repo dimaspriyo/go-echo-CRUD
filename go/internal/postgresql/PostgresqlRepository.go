@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"go/internal/config"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,19 +17,20 @@ type IPostgresqlRepository interface {
 }
 
 type PostgresqlRepository struct {
-	shared config.GlobalShared
-	entity PostgresqlEntity
-	ctx    echo.Context
+	shared *config.GlobalShared
 }
 
-func NewPostgresqlRepository() IPostgresqlRepository {
-	return PostgresqlRepository{}
+func NewPostgresqlRepository(s *config.GlobalShared) IPostgresqlRepository {
+	return PostgresqlRepository{
+		shared: s,
+	}
 }
 
 func (r PostgresqlRepository) FindAll() []PostgresqlEntity {
 
 	var res []PostgresqlEntity
 
+	spew.Dump(r.shared.Psqlconn)
 	rows, err := r.shared.Psqlconn.Query("SELECT name, address, avatar FROM users")
 	if err != nil {
 		panic(err.Error())
@@ -61,12 +63,12 @@ func (r PostgresqlRepository) FindById(id int64) PostgresqlEntity {
 }
 
 func (r PostgresqlRepository) Create(p PostgresqlEntity, ctx echo.Context) (sql.Result, *sql.Tx) {
-	tx, err := r.shared.Psqlconn.BeginTx(r.ctx.Request().Context(), nil)
+	tx, err := r.shared.Psqlconn.BeginTx(ctx.Request().Context(), nil)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	rows, err := tx.ExecContext(r.ctx.Request().Context(), `INSERT INTO users(name, address, avatar) VALUES($1,$2,$3)`, p.Name, p.Address, p.Avatar)
+	rows, err := tx.ExecContext(ctx.Request().Context(), `INSERT INTO users(name, address, avatar) VALUES($1,$2,$3)`, p.Name, p.Address, p.Avatar)
 	if err != nil {
 		tx.Rollback()
 		panic(err.Error())
@@ -77,14 +79,14 @@ func (r PostgresqlRepository) Create(p PostgresqlEntity, ctx echo.Context) (sql.
 }
 
 func (r PostgresqlRepository) Update(id int64, p PostgresqlEntity, ctx echo.Context) (sql.Result, *sql.Tx) {
-	tx, err := r.shared.Psqlconn.BeginTx(r.ctx.Request().Context(), nil)
+	tx, err := r.shared.Psqlconn.BeginTx(ctx.Request().Context(), nil)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	_ = r.FindById(id)
 
-	rows, err := tx.ExecContext(r.ctx.Request().Context(), `UPDATE users SET name=$1, address=$2, avatar=$3 WHERE id=$4`, p.Name, p.Address, p.Avatar, id)
+	rows, err := tx.ExecContext(ctx.Request().Context(), `UPDATE users SET name=$1, address=$2, avatar=$3 WHERE id=$4`, p.Name, p.Address, p.Avatar, id)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -94,14 +96,14 @@ func (r PostgresqlRepository) Update(id int64, p PostgresqlEntity, ctx echo.Cont
 }
 
 func (r PostgresqlRepository) Delete(id int64, ctx echo.Context) (sql.Result, *sql.Tx) {
-	tx, err := r.shared.Psqlconn.BeginTx(r.ctx.Request().Context(), nil)
+	tx, err := r.shared.Psqlconn.BeginTx(ctx.Request().Context(), nil)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	_ = r.FindById(id)
 
-	rows, err := tx.ExecContext(r.ctx.Request().Context(), `DELETE FROM users WHERE id=$1`, id)
+	rows, err := tx.ExecContext(ctx.Request().Context(), `DELETE FROM users WHERE id=$1`, id)
 	if err != nil {
 		panic(err.Error())
 	}

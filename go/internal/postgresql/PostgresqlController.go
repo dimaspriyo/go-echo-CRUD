@@ -12,7 +12,7 @@ type PostgresqlController struct {
 	s IPostgresqlService
 }
 
-func NewPostgresqlController(e *echo.Echo, shared config.GlobalShared) {
+func NewPostgresqlController(e *echo.Echo, shared *config.GlobalShared) {
 	controller := PostgresqlController{
 		s: NewPostgresqlService(shared),
 	}

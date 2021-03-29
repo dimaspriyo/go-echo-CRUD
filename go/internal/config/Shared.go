@@ -22,12 +22,11 @@ type PsqlConn struct {
 var Shared GlobalShared
 
 func InitShared(psql PsqlConn) GlobalShared {
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", psql.Host, psql.Port, psql.User, psql.Password, psql.Dbname)
+	psqlconn := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", psql.User, psql.Password, psql.Host, psql.Dbname)
 	psqldb, err := sql.Open("postgres", psqlconn)
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err.Error())
 	}
-	defer psqldb.Close()
 
 	return GlobalShared{
 		Psqlconn: psqldb,

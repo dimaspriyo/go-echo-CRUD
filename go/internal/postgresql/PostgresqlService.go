@@ -15,14 +15,14 @@ type IPostgresqlService interface {
 }
 
 type PostgresqlService struct {
-	shared config.GlobalShared
+	shared *config.GlobalShared
 	repo   IPostgresqlRepository
 }
 
-func NewPostgresqlService(s config.GlobalShared) IPostgresqlService {
+func NewPostgresqlService(s *config.GlobalShared) IPostgresqlService {
 	return PostgresqlService{
 		shared: s,
-		repo:   NewPostgresqlRepository(),
+		repo:   NewPostgresqlRepository(s),
 	}
 }
 

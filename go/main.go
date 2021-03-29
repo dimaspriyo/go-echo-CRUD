@@ -16,7 +16,6 @@ func init() {
 	viper.SetConfigName("env") // config file name without extension
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
-	viper.AddConfigPath("./env") // config file path
 
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -32,14 +31,14 @@ func init() {
 		Dbname:   viper.GetString("postgresql.dbname"),
 	}
 	Shared = config.InitShared(psqlConn)
-
 }
 
 func main() {
 
 	e := echo.New()
 
-	postgresql.NewPostgresqlController(e, Shared)
+	postgresql.NewPostgresqlController(e, &Shared)
+	defer Shared.Psqlconn.Close()
 
 	e.Logger.Fatal(e.Start(":8000"))
 }
