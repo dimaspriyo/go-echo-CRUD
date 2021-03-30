@@ -11,13 +11,12 @@ services:
             - discovery.type=single-node
         restart: always
     postgresql:
-        image : postgres:alpine
+        build:
+            context: ./go
         ports: 
             - "5432:5432"   
         networks: 
             - go-echo
-        environment: 
-            - POSTGRES_PASSWORD= example
         restart: always
     mongodb:
         image : mongo:bionic
