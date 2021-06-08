@@ -1,7 +1,6 @@
 package postgresql
 
 import (
-	"fmt"
 	"go/internal/config"
 	"go/internal/util"
 	"net/http"
@@ -89,27 +88,6 @@ func (c PostgresqlController) update(ctx echo.Context) error {
 	err := ctx.Bind(ctx.Request())
 	if err != nil {
 		panic(err.Error())
-	}
-
-	validate := validator.New()
-	err = validate.Struct(req)
-	if err != nil {
-		for _, err := range err.(validator.ValidationErrors) {
-
-			fmt.Println(err.Namespace())
-			fmt.Println(err.Field())
-			fmt.Println(err.StructNamespace())
-			fmt.Println(err.StructField())
-			fmt.Println(err.Tag())
-			fmt.Println(err.ActualTag())
-			fmt.Println(err.Kind())
-			fmt.Println(err.Type())
-			fmt.Println(err.Value())
-			fmt.Println(err.Param())
-			fmt.Println()
-		}
-		panic(err.Error())
-
 	}
 
 	res := c.s.Update(id, req, ctx)

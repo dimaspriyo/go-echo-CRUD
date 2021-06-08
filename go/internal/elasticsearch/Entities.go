@@ -1,16 +1,11 @@
 package elasticsearch
 
-type MyLog struct {
-	HostName string `json:"host_name"`
-	Location Location
-	IP       IP
+type ElasticsearchEntity struct {
+	Name     string
+	Location []Coordinate
 }
 
-type Location struct {
-	Latitude  string `json:"latitude"`
-	Longitude string `json:"longitude"`
-}
-
-type IP struct {
-	IPv4 string `json:"ipv4"`
+type Coordinate struct {
+	Latitude  float64
+	Longitude float64
 }
