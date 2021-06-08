@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"go/internal/config"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/labstack/echo/v4"
 )
 
@@ -30,8 +29,7 @@ func (r PostgresqlRepository) FindAll() []PostgresqlEntity {
 
 	var res []PostgresqlEntity
 
-	spew.Dump(r.shared.Psqlconn)
-	rows, err := r.shared.Psqlconn.Query("SELECT name, address, avatar FROM users")
+	rows, err := r.shared.Psqlconn.Query("SELECT id,name, address, avatar FROM users")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -39,7 +37,7 @@ func (r PostgresqlRepository) FindAll() []PostgresqlEntity {
 	defer rows.Close()
 	for rows.Next() {
 		var temp PostgresqlEntity
-		err := rows.Scan(&temp.Name, &temp.Address, &temp.Avatar)
+		err := rows.Scan(&temp.Id, &temp.Name, &temp.Address, &temp.Avatar)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -52,9 +50,9 @@ func (r PostgresqlRepository) FindAll() []PostgresqlEntity {
 func (r PostgresqlRepository) FindById(id int64) PostgresqlEntity {
 	var res PostgresqlEntity
 
-	row := r.shared.Psqlconn.QueryRow(`SELECT name, address, avatar FROM users WHERE id=$1`, id)
+	row := r.shared.Psqlconn.QueryRow(`SELECT id,name, address, avatar FROM users WHERE id=$1`, id)
 
-	err := row.Scan(&res.Name, &res.Address, &res.Avatar)
+	err := row.Scan(&res.Id, &res.Name, &res.Address, &res.Avatar)
 	if err != nil {
 		panic(err.Error())
 	}

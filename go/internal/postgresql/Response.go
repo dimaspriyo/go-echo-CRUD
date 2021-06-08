@@ -7,6 +7,7 @@ type MainResponse struct {
 }
 
 type PostgresqlResponse struct {
+	Id      string `validate:"required"`
 	Avatar  string `validate:"required"`
 	Name    string `validate:"required"`
 	Address string `validate:"required"`

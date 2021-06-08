@@ -10,24 +10,45 @@ services:
             - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
             - discovery.type=single-node
         restart: always
+        networks:
+            - go-echo
     postgresql:
         build:
             context: ./go
+            dockerfile : Dockerfile-Postgresql
         ports: 
             - "5432:5432"   
         networks: 
             - go-echo
         restart: always
-    mongodb:
-        image : mongo:bionic
+        networks:
+            - go-echo
+    mongo:
+        build:
+            context: ./go/
+            dockerfile: Dockerfile-Mongodb
         ports: 
             - "27017:27017"   
         networks: 
             - go-echo
-        environment: 
-            - "MONGO_INITDB_ROOT_USERNAME:root"
-            - "MONGO_INITDB_ROOT_PASSWORD:example"
+        # environment: 
+        #     - "MONGO_INITDB_ROOT_USERNAME:root"
+        #     - "MONGO_INITDB_ROOT_PASSWORD:example"
         restart: always
+        networks:
+            - go-echo
+    mongo-express:
+        image: mongo-express
+        restart: always
+        ports:
+            - 8081:8081
+        networks: 
+            - go-echo
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: root
+            ME_CONFIG_MONGODB_ADMINPASSWORD: example
+        networks:
+            - go-echo
 networks: 
     go-echo:
         driver: bridge

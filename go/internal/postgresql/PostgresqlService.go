@@ -124,6 +124,7 @@ func (s PostgresqlService) convertDTOtoDAO(req PostgresqlRequest) PostgresqlEnti
 
 func (s PostgresqlService) convertDAOtoDTO(ent PostgresqlEntity) PostgresqlResponse {
 	resp := PostgresqlResponse{
+		Id:      ent.Id,
 		Avatar:  ent.Avatar,
 		Name:    ent.Name,
 		Address: ent.Address,
