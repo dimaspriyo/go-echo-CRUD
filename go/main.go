@@ -37,8 +37,8 @@ func main() {
 
 	e := echo.New()
 
-	postgresql.NewPostgresqlController(e, &Shared)
+	psql := postgresql.NewPostgresqlController(e, &Shared)
 	defer Shared.Psqlconn.Close()
 
-	e.Logger.Fatal(e.Start(":8000"))
+	e.Logger.Fatal(psql.Start(":1234"))
 }

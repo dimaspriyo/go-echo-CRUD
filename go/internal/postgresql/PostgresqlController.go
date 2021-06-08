@@ -1,7 +1,6 @@
 package postgresql
 
 import (
-	"fmt"
 	"go/internal/config"
 	"go/internal/util"
 	"net/http"
@@ -15,7 +14,7 @@ type PostgresqlController struct {
 	Shared *config.GlobalShared
 }
 
-func NewPostgresqlController(e *echo.Echo, shared *config.GlobalShared) {
+func NewPostgresqlController(e *echo.Echo, shared *config.GlobalShared) *echo.Echo {
 	controller := PostgresqlController{
 		s:      NewPostgresqlService(shared),
 		Shared: shared,
@@ -29,9 +28,10 @@ func NewPostgresqlController(e *echo.Echo, shared *config.GlobalShared) {
 	g.GET("", controller.getAll)
 	g.GET("/:id", controller.getById)
 	g.POST("", controller.create)
-	g.PUT("", controller.update)
-	g.DELETE("", controller.delete)
+	g.PUT("/:id", controller.update)
+	g.DELETE("/:id", controller.delete)
 
+	return e
 }
 
 func (c *PostgresqlController) getAll(ctx echo.Context) error {
@@ -59,7 +59,8 @@ func (c PostgresqlController) getById(ctx echo.Context) error {
 
 func (c PostgresqlController) create(ctx echo.Context) error {
 	var response MainResponse
-	var req PostgresqlRequest
+
+	req := PostgresqlRequest{}
 
 	err := ctx.Bind(&req)
 	if err != nil {
@@ -85,30 +86,9 @@ func (c PostgresqlController) update(ctx echo.Context) error {
 	var req PostgresqlRequest
 
 	id := util.GetIDInt64Param(ctx)
-	err := ctx.Bind(ctx.Request())
+	err := ctx.Bind(&req)
 	if err != nil {
 		panic(err.Error())
-	}
-
-	validate := validator.New()
-	err = validate.Struct(req)
-	if err != nil {
-		for _, err := range err.(validator.ValidationErrors) {
-
-			fmt.Println(err.Namespace())
-			fmt.Println(err.Field())
-			fmt.Println(err.StructNamespace())
-			fmt.Println(err.StructField())
-			fmt.Println(err.Tag())
-			fmt.Println(err.ActualTag())
-			fmt.Println(err.Kind())
-			fmt.Println(err.Type())
-			fmt.Println(err.Value())
-			fmt.Println(err.Param())
-			fmt.Println()
-		}
-		panic(err.Error())
-
 	}
 
 	res := c.s.Update(id, req, ctx)
