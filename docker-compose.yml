@@ -20,9 +20,6 @@ services:
             - "5432:5432"   
         networks: 
             - go-echo
-        restart: always
-        networks:
-            - go-echo
     mongo:
         build:
             context: ./go/
